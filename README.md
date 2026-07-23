@@ -8,7 +8,7 @@ There are two independent ways to install this, pick whichever fits you:
 
 ## Version A: Standalone app
 
-No Decky Loader needed. Open a terminal in Desktop Mode (Konsole) and run:
+Open a terminal in Desktop Mode (Konsole) and run:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/RDv88/steamos-force-desktop-mode/master/standalone/install.sh | sh
