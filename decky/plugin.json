@@ -1,0 +1,11 @@
+{
+  "name": "Force Desktop Mode",
+  "author": "RDv88",
+  "flags": ["_root"],
+  "api_version": 1,
+  "publish": {
+    "tags": ["system", "desktop-mode", "steamos"],
+    "description": "Forces and auto-heals Desktop Mode as the default boot session on SteamOS (Steam Deck and Steam Machine), even after updates reset it.",
+    "image": "https://opengraph.githubassets.com/1/RDv88/steamos-force-desktop-mode"
+  }
+}

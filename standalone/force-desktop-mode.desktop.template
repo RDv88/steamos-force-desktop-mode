@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Force Desktop Mode
+Comment=Set Desktop Mode or Game Mode as the default boot session
+Exec=python3 __INSTALL_DIR__/force_desktop_mode.py
+Icon=preferences-desktop
+Terminal=false
+Categories=Settings;

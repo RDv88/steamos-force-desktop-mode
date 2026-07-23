@@ -1,0 +1,9 @@
+[Unit]
+Description=Force Desktop Mode auto-heal watcher
+
+[Service]
+ExecStart=/usr/bin/python3 %h/.local/share/force-desktop-mode/force_desktop_mode.py --watch
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
