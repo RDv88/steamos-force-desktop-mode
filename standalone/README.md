@@ -46,4 +46,4 @@ curl -fsSL https://raw.githubusercontent.com/RDv88/steamos-force-desktop-mode/ma
 
 ## License
 
-BSD-3-Clause, see [LICENSE](../LICENSE).
+BSD-3-Clause, see [LICENSE](LICENSE).
