@@ -28,6 +28,7 @@ Open "Force Desktop Mode" from your application menu. It shows the current statu
 - Reapply the current setting immediately
 - Turn the auto-heal background check on/off
 - Check for updates
+- Uninstall, right from the menu
 
 The app also does a quick update check (with a short timeout, skipped silently if you're offline)
 every time you open it. That's useful since you'll most likely open this app exactly when
@@ -39,6 +40,11 @@ Tested on Steam Deck. Should work on Steam Machine too, since both use the same 
 mechanism. Feedback from Steam Machine users is welcome via Issues.
 
 ## Uninstalling
+
+Easiest: open "Force Desktop Mode" from your application menu and choose "Uninstall Force Desktop
+Mode" from the list.
+
+Alternatively, from a terminal:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/RDv88/steamos-force-desktop-mode/master/standalone/uninstall.sh | sh

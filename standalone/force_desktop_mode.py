@@ -2,6 +2,7 @@
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -25,6 +26,11 @@ LOGIN_MODE_LABELS = {"desktop": "Desktop Mode (Plasma)", "game": "Game Mode (gam
 
 WATCH_SERVICE = "force-desktop-mode-watch.service"
 CHECK_INTERVAL_SECONDS = 60
+
+INSTALL_DIR = os.path.expanduser("~/.local/share/force-desktop-mode")
+DESKTOP_ENTRY_PATH = os.path.expanduser("~/.local/share/applications/force-desktop-mode.desktop")
+SYSTEMD_USER_DIR = os.path.expanduser("~/.config/systemd/user")
+APP_ICON = "preferences-desktop"
 
 
 def load_settings() -> dict:
@@ -51,7 +57,7 @@ def run(*args: str) -> tuple:
 
 
 def kdialog(*args: str) -> tuple:
-    return run("kdialog", "--title", "Force Desktop Mode", *args)
+    return run("kdialog", "--title", "Force Desktop Mode", "--icon", APP_ICON, *args)
 
 
 def get_current_default():
@@ -95,6 +101,33 @@ def remove_logout_hook() -> None:
 def set_watch_enabled(enabled: bool) -> None:
     action = "enable" if enabled else "disable"
     subprocess.run(["systemctl", "--user", action, "--now", WATCH_SERVICE], capture_output=True)
+
+
+def uninstall() -> None:
+    code, _ = kdialog(
+        "--warningyesno",
+        "This removes Force Desktop Mode: the app, its menu entry, the auto-heal service, "
+        "and the logout hook.\n\nYour current Desktop/Game Mode default is left as-is.\n\n"
+        "Uninstall now?",
+    )
+    if code != 0:
+        return
+
+    subprocess.run(["systemctl", "--user", "disable", "--now", WATCH_SERVICE], capture_output=True)
+    service_path = os.path.join(SYSTEMD_USER_DIR, WATCH_SERVICE)
+    if os.path.exists(service_path):
+        os.remove(service_path)
+    subprocess.run(["systemctl", "--user", "daemon-reload"], capture_output=True)
+
+    remove_logout_hook()
+
+    if os.path.exists(DESKTOP_ENTRY_PATH):
+        os.remove(DESKTOP_ENTRY_PATH)
+
+    kdialog("--msgbox", "Force Desktop Mode has been uninstalled.")
+
+    shutil.rmtree(INSTALL_DIR, ignore_errors=True)
+    sys.exit(0)
 
 
 # ---- Update check (only run from the interactive menu, never from --watch) ----
@@ -153,10 +186,10 @@ def show_menu() -> None:
     matches = current == desired
     autofix = settings.get("autofix_enabled", True)
 
-    icon = "OK" if matches else "!!"
+    status_icon = "✅" if matches else "⚠️"
     current_label = LOGIN_MODE_LABELS.get(current, current) if current else "unknown"
     desired_label = LOGIN_MODE_LABELS.get(desired, desired)
-    status_text = f"[{icon}] Desired: {desired_label}\nCurrent: {current_label}"
+    status_text = f"{status_icon} Desired: {desired_label}\nCurrent: {current_label}"
 
     options = [
         "desktop", "Set Desktop Mode as default",
@@ -164,6 +197,7 @@ def show_menu() -> None:
         "reapply", "Reapply now",
         "autofix", f"Turn auto-heal {'off' if autofix else 'on'} (currently {'on' if autofix else 'off'})",
         "update", "Check for updates",
+        "uninstall", "Uninstall Force Desktop Mode",
     ]
     code, choice = kdialog("--menu", status_text, *options)
     if code != 0 or not choice:
@@ -185,6 +219,8 @@ def show_menu() -> None:
         set_watch_enabled(settings["autofix_enabled"])
     elif choice == "update":
         check_for_update_manual(settings)
+    elif choice == "uninstall":
+        uninstall()
 
     show_menu()
 
