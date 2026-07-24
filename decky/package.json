@@ -1,6 +1,6 @@
 {
   "name": "steamos-force-desktop-mode",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Forces and auto-heals Desktop Mode as the default boot session on SteamOS (Steam Deck and Steam Machine).",
   "type": "module",
   "scripts": {
